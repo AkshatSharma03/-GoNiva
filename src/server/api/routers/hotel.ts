@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 
-// ── Types ────────────────────────────────────────────────────────────────────────────────
+// ── Types ─────────────────────────────────────────────────────────────────────
 export interface Hotel {
   hotelId: string;
   name: string;
@@ -27,7 +27,7 @@ export interface HotelOffer {
   boardType?: string;
 }
 
-// ── Amadeus auth ─────────────────────────────────────────────────────────────────
+// ── Amadeus auth ──────────────────────────────────────────────────────────────
 let _token: string | null = null;
 let _expiry = 0;
 
@@ -48,7 +48,7 @@ async function getToken(): Promise<string | null> {
   return _token;
 }
 
-// ── Mock data ─────────────────────────────────────────────────────────────────────────
+// ── Mock data ─────────────────────────────────────────────────────────────────
 const MOCK: Hotel[] = [
   { hotelId: "GNV001", name: "The Grand Palazzo",       cityCode: "LON", latitude: 51.5074, longitude: -0.1278, address: "1 Mayfair Lane, London W1K",         rating: "5", amenities: ["WIFI","SPA","POOL","RESTAURANT","BAR","CONCIERGE"], distance: "0.3 km" },
   { hotelId: "GNV002", name: "Violet Garden Suites",    cityCode: "LON", latitude: 51.5155, longitude: -0.0921, address: "45 Bloomsbury Square, London WC1A",   rating: "4", amenities: ["WIFI","FITNESS","RESTAURANT","BAR"],                distance: "1.1 km" },
@@ -89,7 +89,7 @@ function mockOffers(hotels: Hotel[], checkIn: string, checkOut: string, adults: 
   });
 }
 
-// ── Popular cities ──────────────────────────────────────────────────────────────────
+// ── Popular cities ────────────────────────────────────────────────────────────
 const CITIES = [
   { cityCode: "LON", name: "London",       country: "GB" }, { cityCode: "NYC", name: "New York",      country: "US" },
   { cityCode: "PAR", name: "Paris",        country: "FR" }, { cityCode: "DXB", name: "Dubai",         country: "AE" },
@@ -103,7 +103,7 @@ const CITIES = [
   { cityCode: "MAD", name: "Madrid",       country: "ES" }, { cityCode: "ZRH", name: "Zurich",        country: "CH" },
 ];
 
-// ── Router ──────────────────────────────────────────────────────────────────────────────
+// ── Router ────────────────────────────────────────────────────────────────────
 export const hotelRouter = createTRPCRouter({
 
   searchCities: publicProcedure

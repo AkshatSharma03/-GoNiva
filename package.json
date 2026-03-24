@@ -11,11 +11,9 @@
     "format:write": "prettier --write \"**/*.{ts,tsx,js,jsx,mdx}\" --cache",
     "lint": "next lint",
     "lint:fix": "next lint --fix",
+    "preview": "next build && next start",
     "start": "next start",
     "typecheck": "tsc --noEmit"
-  },
-  "engines": {
-    "node": ">=20.0.0"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.15",
