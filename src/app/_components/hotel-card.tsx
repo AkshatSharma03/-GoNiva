@@ -1,16 +1,18 @@
-import { MapPin, Wifi, Waves, Dumbbell, Utensils, Wine, Car, CheckCircle, XCircle } from "lucide-react";
+import { MapPin, Wifi, Waves, Dumbbell, Utensils, Wine, Car, CheckCircle, XCircle, ExternalLink } from "lucide-react";
 import { Badge } from "~/components/ui/badge";
+import { Button } from "~/components/ui/button";
 import { Card, CardContent } from "~/components/ui/card";
+import { Separator } from "~/components/ui/separator";
 
 const AMENITY_ICONS: Record<string, React.ReactNode> = {
-  WIFI:         <Wifi       className="h-3 w-3" />,
-  POOL:         <Waves      className="h-3 w-3" />,
-  SWIMMING_POOL:<Waves      className="h-3 w-3" />,
-  FITNESS:      <Dumbbell   className="h-3 w-3" />,
-  FITNESS_CENTER:<Dumbbell  className="h-3 w-3" />,
-  RESTAURANT:   <Utensils   className="h-3 w-3" />,
-  BAR:          <Wine       className="h-3 w-3" />,
-  PARKING:      <Car        className="h-3 w-3" />,
+  WIFI:          <Wifi      className="size-3" />,
+  POOL:          <Waves     className="size-3" />,
+  SWIMMING_POOL: <Waves     className="size-3" />,
+  FITNESS:       <Dumbbell  className="size-3" />,
+  FITNESS_CENTER:<Dumbbell  className="size-3" />,
+  RESTAURANT:    <Utensils  className="size-3" />,
+  BAR:           <Wine      className="size-3" />,
+  PARKING:       <Car       className="size-3" />,
 };
 
 const AMENITY_LABELS: Record<string, string> = {
@@ -40,7 +42,7 @@ function Stars({ n }: { n: number }) {
   return (
     <span className="text-yellow-400">
       {"★".repeat(Math.min(n, 5))}
-      <span className="text-white/20">{"★".repeat(Math.max(0, 5 - n))}</span>
+      <span className="text-foreground/20">{"★".repeat(Math.max(0, 5 - n))}</span>
     </span>
   );
 }
@@ -48,12 +50,12 @@ function Stars({ n }: { n: number }) {
 export function HotelCard({ hotel, offer, nights }: Props) {
   const rating = parseInt(hotel.rating ?? "0");
   const perNight = offer ? (parseFloat(offer.price.total) / nights).toFixed(0) : null;
-  const accentColor = rating >= 5 ? "hsl(280,100%,70%)" : rating >= 4 ? "#a78bfa" : "#7c3aed";
+  const accentOpacity = rating >= 5 ? "opacity-100" : rating >= 4 ? "opacity-70" : "opacity-40";
 
   return (
-    <Card className="group overflow-hidden transition-all duration-200 hover:border-purple-500/50 hover:shadow-lg hover:shadow-purple-900/30">
+    <Card className="group overflow-hidden transition-all duration-200 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/10">
       {/* Accent top bar */}
-      <div className="h-1 w-full" style={{ background: `linear-gradient(90deg, ${accentColor}, transparent 70%)` }} />
+      <div className={`h-1 w-full bg-primary ${accentOpacity}`} />
 
       <CardContent className="p-5">
         {/* Header */}
@@ -63,10 +65,10 @@ export function HotelCard({ hotel, offer, nights }: Props) {
               {rating > 0 && <Stars n={rating} />}
               <Badge variant="default" className="text-[10px]">{rating}★ Hotel</Badge>
             </div>
-            <h3 className="mt-1 truncate text-base font-bold text-white">{hotel.name}</h3>
+            <h3 className="mt-1 truncate text-base font-bold">{hotel.name}</h3>
             {hotel.address && (
               <p className="mt-0.5 flex items-center gap-1 truncate text-[11px] text-muted-foreground">
-                <MapPin className="h-3 w-3 shrink-0 text-purple-400" />
+                <MapPin className="size-3 shrink-0 text-primary/60" />
                 {hotel.address}
               </p>
             )}
@@ -80,7 +82,7 @@ export function HotelCard({ hotel, offer, nights }: Props) {
           {/* Price */}
           {offer ? (
             <div className="shrink-0 text-right">
-              <div className="text-2xl font-extrabold text-white">
+              <div className="text-2xl font-extrabold">
                 ${perNight}
                 <span className="text-xs font-normal text-muted-foreground">/night</span>
               </div>
@@ -115,8 +117,9 @@ export function HotelCard({ hotel, offer, nights }: Props) {
             )}
             {offer.boardType && offer.boardType !== "ROOM_ONLY" && (
               <Badge variant="success" className="text-[10px]">
-                {offer.boardType === "BREAKFAST" ? "🥐 Breakfast included" :
-                 offer.boardType === "HALF_BOARD" ? "🍽 Half board" : offer.boardType.replace(/_/g, " ")}
+                {offer.boardType === "BREAKFAST" ? "🥐 Breakfast" :
+                 offer.boardType === "HALF_BOARD" ? "🍽 Half board" :
+                 offer.boardType.replace(/_/g, " ")}
               </Badge>
             )}
           </div>
@@ -126,36 +129,50 @@ export function HotelCard({ hotel, offer, nights }: Props) {
         {hotel.amenities && hotel.amenities.length > 0 && (
           <div className="mt-3 flex flex-wrap gap-1.5">
             {hotel.amenities.slice(0, 6).map(a => (
-              <span key={a} className="flex items-center gap-1 rounded-md bg-white/5 px-2 py-0.5 text-[10px] text-purple-300">
+              <span
+                key={a}
+                className="flex items-center gap-1 rounded-md bg-muted/50 px-2 py-0.5 text-[10px] text-primary/80"
+              >
                 {AMENITY_ICONS[a] ?? "✓"} {AMENITY_LABELS[a] ?? a.replace(/_/g, " ")}
               </span>
             ))}
             {hotel.amenities.length > 6 && (
-              <span className="text-[11px] text-muted-foreground">+{hotel.amenities.length - 6} more</span>
+              <span className="text-[11px] text-muted-foreground">
+                +{hotel.amenities.length - 6} more
+              </span>
             )}
           </div>
         )}
 
         {/* Footer */}
-        <div className="mt-4 flex items-center justify-between border-t border-white/10 pt-3">
+        <Separator className="my-3" />
+        <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             {offer?.cancellable ? (
               <span className="flex items-center gap-1 text-[11px] text-emerald-400">
-                <CheckCircle className="h-3.5 w-3.5" /> Free cancellation
+                <CheckCircle className="size-3.5" /> Free cancellation
               </span>
             ) : offer && (
               <span className="flex items-center gap-1 text-[11px] text-rose-400">
-                <XCircle className="h-3.5 w-3.5" /> Non-refundable
+                <XCircle className="size-3.5" /> Non-refundable
               </span>
             )}
           </div>
           {offer && (
-            <button
-              className="text-xs font-semibold text-[hsl(280,100%,70%)] transition-colors hover:text-[hsl(280,100%,80%)]"
-              onClick={() => window.open(`https://www.google.com/travel/hotels/search?q=${encodeURIComponent(hotel.name)}`, "_blank")}
+            <Button
+              variant="link"
+              size="sm"
+              className="h-auto p-0 text-xs text-primary hover:text-primary/80"
+              onClick={() =>
+                window.open(
+                  `https://www.google.com/travel/hotels/search?q=${encodeURIComponent(hotel.name)}`,
+                  "_blank",
+                  "noopener,noreferrer"
+                )
+              }
             >
-              View deal →
-            </button>
+              View deal <ExternalLink className="ml-1 size-3" />
+            </Button>
           )}
         </div>
       </CardContent>

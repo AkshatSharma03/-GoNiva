@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { HotelSearch } from "./hotel-search";
 import { HotelResults } from "./hotel-results";
+import { Button } from "~/components/ui/button";
 
 interface SearchParams {
   cityCode: string; cityName: string; checkIn: string; checkOut: string;
@@ -32,44 +33,46 @@ export function HotelHomePage() {
     handleSearch({ cityCode, cityName, checkIn: addDays(7), checkOut: addDays(9), adults: 2 });
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-[#2e026d] to-[#15162c] text-white">
+    <main className="min-h-screen bg-background text-foreground">
       <div className="container mx-auto px-4 py-12">
 
         {/* Hero */}
         <div className="mb-10 text-center">
-          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-sm text-white/60">
+          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-1.5 text-sm text-muted-foreground">
             🏨 Hotel Search · Powered by Amadeus API
           </div>
           <h1 className="text-5xl font-extrabold tracking-tight sm:text-[5rem]">
             Find your{" "}
-            <span className="text-[hsl(280,100%,70%)]">perfect</span>
+            <span className="text-primary">perfect</span>
             {" "}stay
           </h1>
-          <p className="mt-4 text-lg text-white/50">
+          <p className="mt-4 text-lg text-muted-foreground">
             Real-time hotel pricing · Worldwide coverage · Instant availability
           </p>
         </div>
 
         {/* Search card */}
-        <div className="mx-auto mb-10 max-w-4xl rounded-2xl border border-white/10 bg-white/5 p-6 shadow-2xl backdrop-blur-sm">
+        <div className="mx-auto mb-10 max-w-4xl rounded-2xl border border-border bg-card/80 p-6 shadow-2xl backdrop-blur-sm">
           <HotelSearch onSearch={handleSearch} />
         </div>
 
         {/* Quick-search chips */}
         {!activeSearch && (
           <div className="mb-16 text-center">
-            <p className="mb-4 text-sm font-medium uppercase tracking-widest text-white/30">
+            <p className="mb-4 text-sm font-medium uppercase tracking-widest text-muted-foreground/50">
               Popular destinations
             </p>
             <div className="flex flex-wrap justify-center gap-3">
               {QUICK_CITIES.map(({ cityCode, cityName }) => (
-                <button
+                <Button
                   key={cityCode}
+                  variant="outline"
+                  size="sm"
                   onClick={() => quickSearch(cityCode, cityName)}
-                  className="rounded-full border border-white/10 bg-white/5 px-5 py-2 text-sm text-white/70 transition-all hover:border-[hsl(280,100%,70%)]/50 hover:bg-white/10 hover:text-white hover:shadow-lg hover:shadow-purple-900/30"
+                  className="rounded-full border-border hover:border-primary/50 hover:text-foreground"
                 >
                   {cityName}
-                </button>
+                </Button>
               ))}
             </div>
           </div>
@@ -83,10 +86,13 @@ export function HotelHomePage() {
               { icon: "🌍", title: "Global coverage",   desc: "Thousands of hotels across 180+ countries" },
               { icon: "🔒", title: "Secure booking",    desc: "Free cancellation options clearly shown" },
             ].map(f => (
-              <div key={f.title} className="flex max-w-xs flex-col gap-2 rounded-xl bg-white/10 p-4 hover:bg-white/20 transition-colors">
+              <div
+                key={f.title}
+                className="flex flex-col gap-2 rounded-xl border border-border bg-card/50 p-4 transition-colors hover:bg-card"
+              >
                 <div className="text-2xl">{f.icon}</div>
                 <h3 className="font-bold">{f.title}</h3>
-                <p className="text-sm text-white/60">{f.desc}</p>
+                <p className="text-sm text-muted-foreground">{f.desc}</p>
               </div>
             ))}
           </div>
@@ -101,7 +107,7 @@ export function HotelHomePage() {
 
         {/* Empty state */}
         {!activeSearch && (
-          <div className="mt-4 flex flex-col items-center gap-3 text-white/20">
+          <div className="mt-4 flex flex-col items-center gap-3 text-muted-foreground/30">
             <div className="text-7xl">🏨</div>
             <p className="text-base">Enter a destination above to start searching</p>
           </div>

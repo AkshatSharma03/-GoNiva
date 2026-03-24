@@ -4,6 +4,8 @@ import { useState, useRef, useEffect } from "react";
 import { Search, MapPin, Calendar, Users, SlidersHorizontal } from "lucide-react";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
+import { Label } from "~/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select";
 import { api } from "~/trpc/react";
 
 interface SearchParams {
@@ -33,16 +35,16 @@ export function HotelSearch({ onSearch, loading }: Props) {
   const checkInDefault  = addDays(today(), 7);
   const checkOutDefault = addDays(today(), 9);
 
-  const [cityQuery,  setCityQuery]  = useState("");
-  const [cityCode,   setCityCode]   = useState("LON");
-  const [cityName,   setCityName]   = useState("");
-  const [checkIn,    setCheckIn]    = useState(checkInDefault);
-  const [checkOut,   setCheckOut]   = useState(checkOutDefault);
-  const [adults,     setAdults]     = useState(2);
-  const [maxPrice,   setMaxPrice]   = useState<number | undefined>();
-  const [minRating,  setMinRating]  = useState<number | undefined>();
+  const [cityQuery,   setCityQuery]   = useState("");
+  const [cityCode,    setCityCode]    = useState("LON");
+  const [cityName,    setCityName]    = useState("");
+  const [checkIn,     setCheckIn]     = useState(checkInDefault);
+  const [checkOut,    setCheckOut]    = useState(checkOutDefault);
+  const [adults,      setAdults]      = useState("2");
+  const [maxPrice,    setMaxPrice]    = useState<number | undefined>();
+  const [minRating,   setMinRating]   = useState<string>("");
   const [showFilters, setShowFilters] = useState(false);
-  const [dropOpen,   setDropOpen]   = useState(false);
+  const [dropOpen,    setDropOpen]    = useState(false);
   const dropRef = useRef<HTMLDivElement>(null);
 
   const { data: cityData, isFetching: cityFetching } = api.hotel.searchCities.useQuery(
@@ -51,7 +53,10 @@ export function HotelSearch({ onSearch, loading }: Props) {
   );
 
   useEffect(() => {
-    const handle = (e: MouseEvent) => { if (dropRef.current && !dropRef.current.contains(e.target as Node)) setDropOpen(false); };
+    const handle = (e: MouseEvent) => {
+      if (dropRef.current && !dropRef.current.contains(e.target as Node))
+        setDropOpen(false);
+    };
     document.addEventListener("mousedown", handle);
     return () => document.removeEventListener("mousedown", handle);
   }, []);
@@ -59,29 +64,37 @@ export function HotelSearch({ onSearch, loading }: Props) {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!cityCode) return;
-    onSearch({ cityCode, cityName: cityName || cityCode, checkIn, checkOut, adults, maxPrice, minRating });
+    onSearch({
+      cityCode,
+      cityName: cityName || cityCode,
+      checkIn,
+      checkOut,
+      adults: parseInt(adults),
+      maxPrice,
+      minRating: minRating ? parseInt(minRating) : undefined,
+    });
   };
 
   return (
     <form onSubmit={handleSubmit} className="w-full space-y-4">
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
 
-        {/* City */}
+        {/* Destination */}
         <div ref={dropRef} className="relative lg:col-span-2">
-          <label className="mb-1.5 block text-xs font-medium uppercase tracking-widest text-purple-300">
-            Destination
-          </label>
+          <Label htmlFor="destination" className="mb-1.5 block">Destination</Label>
           <div className="relative">
-            <MapPin className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-purple-400" />
+            <MapPin className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-primary/60" />
             <Input
+              id="destination"
               className="pl-9"
               placeholder="City — e.g. London, Paris, Dubai…"
               value={cityQuery || cityName}
               onChange={e => { setCityQuery(e.target.value); setCityName(""); setDropOpen(true); }}
               onFocus={() => setDropOpen(true)}
+              autoComplete="off"
             />
             {cityFetching && (
-              <span className="absolute right-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+              <span className="absolute right-3 top-1/2 size-3.5 -translate-y-1/2 animate-spin rounded-full border-2 border-primary border-t-transparent" />
             )}
           </div>
           {dropOpen && cityData?.cities && cityData.cities.length > 0 && (
@@ -90,15 +103,20 @@ export function HotelSearch({ onSearch, loading }: Props) {
                 <li key={c.cityCode}>
                   <button
                     type="button"
-                    className="flex w-full items-center gap-2 px-3 py-2 text-sm transition-colors hover:bg-white/10"
+                    className="flex w-full items-center gap-2 px-3 py-2 text-sm transition-colors hover:bg-accent/10"
                     onMouseDown={e => {
                       e.preventDefault();
-                      setCityCode(c.cityCode); setCityName(c.name); setCityQuery(""); setDropOpen(false);
+                      setCityCode(c.cityCode);
+                      setCityName(c.name);
+                      setCityQuery("");
+                      setDropOpen(false);
                     }}
                   >
-                    <MapPin className="h-3.5 w-3.5 shrink-0 text-purple-400" />
+                    <MapPin className="size-3.5 shrink-0 text-primary/60" />
                     <span className="font-medium">{c.name}</span>
-                    <span className="ml-auto text-xs text-muted-foreground">{c.cityCode} · {c.country}</span>
+                    <span className="ml-auto text-xs text-muted-foreground">
+                      {c.cityCode} · {c.country}
+                    </span>
                   </button>
                 </li>
               ))}
@@ -108,64 +126,78 @@ export function HotelSearch({ onSearch, loading }: Props) {
 
         {/* Check-in */}
         <div>
-          <label className="mb-1.5 block text-xs font-medium uppercase tracking-widest text-purple-300">
-            Check-in
-          </label>
+          <Label htmlFor="check-in" className="mb-1.5 block">Check-in</Label>
           <div className="relative">
-            <Calendar className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-purple-400" />
-            <Input type="date" className="pl-9" min={today()} value={checkIn}
-              onChange={e => setCheckIn(e.target.value)} />
+            <Calendar className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-primary/60" />
+            <Input
+              id="check-in"
+              type="date"
+              className="pl-9"
+              min={today()}
+              value={checkIn}
+              onChange={e => setCheckIn(e.target.value)}
+            />
           </div>
         </div>
 
         {/* Check-out */}
         <div>
-          <label className="mb-1.5 block text-xs font-medium uppercase tracking-widest text-purple-300">
-            Check-out
-          </label>
+          <Label htmlFor="check-out" className="mb-1.5 block">Check-out</Label>
           <div className="relative">
-            <Calendar className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-purple-400" />
-            <Input type="date" className="pl-9" min={checkIn || today()} value={checkOut}
-              onChange={e => setCheckOut(e.target.value)} />
+            <Calendar className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-primary/60" />
+            <Input
+              id="check-out"
+              type="date"
+              className="pl-9"
+              min={checkIn || today()}
+              value={checkOut}
+              onChange={e => setCheckOut(e.target.value)}
+            />
           </div>
         </div>
       </div>
 
       {/* Row 2: guests + filters toggle + search */}
       <div className="flex flex-wrap items-end gap-3">
-        <div className="w-40">
-          <label className="mb-1.5 block text-xs font-medium uppercase tracking-widest text-purple-300">
-            Guests
-          </label>
+        <div className="w-44">
+          <Label htmlFor="guests" className="mb-1.5 block">Guests</Label>
           <div className="relative">
-            <Users className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-purple-400" />
-            <select
-              value={adults}
-              onChange={e => setAdults(parseInt(e.target.value))}
-              className="flex h-9 w-full appearance-none rounded-md border border-border bg-white/5 pl-9 pr-3 py-1 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
-            >
-              {[1,2,3,4,5,6].map(n => <option key={n} value={n}>{n} {n===1?"adult":"adults"}</option>)}
-            </select>
+            <Users className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-primary/60 z-10 pointer-events-none" />
+            <Select value={adults} onValueChange={setAdults}>
+              <SelectTrigger id="guests" className="pl-9">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {[1, 2, 3, 4, 5, 6].map(n => (
+                  <SelectItem key={n} value={String(n)}>
+                    {n} {n === 1 ? "adult" : "adults"}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
         </div>
 
-        <Button type="button" variant="outline" size="sm"
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
           onClick={() => setShowFilters(v => !v)}
-          className="gap-1.5 border-purple-700/50 text-purple-300 hover:bg-purple-900/30"
+          className="gap-1.5 border-primary/30 text-primary/80 hover:bg-primary/10"
         >
-          <SlidersHorizontal className="h-3.5 w-3.5" />
+          <SlidersHorizontal className="size-3.5" />
           Filters
         </Button>
 
         <Button
           type="submit"
           disabled={!cityCode || loading}
-          className="ml-auto gap-2 bg-[hsl(280,100%,70%)] px-6 font-bold text-black hover:bg-[hsl(280,100%,60%)]"
+          className="ml-auto gap-2 px-6 font-bold"
         >
           {loading ? (
-            <span className="h-4 w-4 animate-spin rounded-full border-2 border-black border-t-transparent" />
+            <span className="size-4 animate-spin rounded-full border-2 border-primary-foreground border-t-transparent" />
           ) : (
-            <Search className="h-4 w-4" />
+            <Search className="size-4" />
           )}
           Search Hotels
         </Button>
@@ -173,12 +205,11 @@ export function HotelSearch({ onSearch, loading }: Props) {
 
       {/* Filters panel */}
       {showFilters && (
-        <div className="grid grid-cols-1 gap-3 rounded-xl border border-purple-900/50 bg-white/5 p-4 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-3 rounded-xl border border-border bg-card/50 p-4 sm:grid-cols-2">
           <div>
-            <label className="mb-1.5 block text-xs font-medium uppercase tracking-widest text-purple-300">
-              Max total price (USD)
-            </label>
+            <Label htmlFor="max-price" className="mb-1.5 block">Max total price (USD)</Label>
             <Input
+              id="max-price"
               type="number"
               placeholder="No limit"
               min={0}
@@ -187,19 +218,18 @@ export function HotelSearch({ onSearch, loading }: Props) {
             />
           </div>
           <div>
-            <label className="mb-1.5 block text-xs font-medium uppercase tracking-widest text-purple-300">
-              Min star rating
-            </label>
-            <select
-              value={minRating ?? ""}
-              onChange={e => setMinRating(e.target.value ? parseInt(e.target.value) : undefined)}
-              className="flex h-9 w-full appearance-none rounded-md border border-border bg-white/5 px-3 py-1 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
-            >
-              <option value="">Any rating</option>
-              <option value="3">3★ and above</option>
-              <option value="4">4★ and above</option>
-              <option value="5">5★ only</option>
-            </select>
+            <Label htmlFor="min-rating" className="mb-1.5 block">Min star rating</Label>
+            <Select value={minRating} onValueChange={setMinRating}>
+              <SelectTrigger id="min-rating">
+                <SelectValue placeholder="Any rating" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="">Any rating</SelectItem>
+                <SelectItem value="3">3★ and above</SelectItem>
+                <SelectItem value="4">4★ and above</SelectItem>
+                <SelectItem value="5">5★ only</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
         </div>
       )}
