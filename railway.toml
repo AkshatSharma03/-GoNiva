@@ -1,6 +1,6 @@
 [build]
 builder = "NIXPACKS"
-buildCommand = "SKIP_ENV_VALIDATION=1 npm run build"
+buildCommand = "NODE_ENV=production SKIP_ENV_VALIDATION=1 npm run build"
 
 [deploy]
 startCommand = "npm start"
