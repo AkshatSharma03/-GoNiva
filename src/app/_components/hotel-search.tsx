@@ -1,14 +1,14 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Search, MapPin, Calendar, Users, SlidersHorizontal } from "lucide-react";
+import { Search, MapPin, Calendar, Users, SlidersHorizontal, X } from "lucide-react";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select";
 import { api } from "~/trpc/react";
 
-interface SearchParams {
+export interface SearchParams {
   cityCode: string;
   cityName: string;
   checkIn: string;
@@ -21,35 +21,40 @@ interface SearchParams {
 interface Props {
   onSearch: (params: SearchParams) => void;
   loading?: boolean;
+  initialValues?: Partial<SearchParams>;
 }
 
 type City = { cityCode: string; name: string; country: string };
 
-function today() { return new Date().toISOString().split("T")[0]!; }
-function addDays(d: string, n: number) {
-  const dt = new Date(d); dt.setDate(dt.getDate() + n);
+function todayStr() { return new Date().toISOString().split("T")[0]!; }
+function addDays(base: string, n: number) {
+  const dt = new Date(base); dt.setDate(dt.getDate() + n);
   return dt.toISOString().split("T")[0]!;
 }
 
-export function HotelSearch({ onSearch, loading }: Props) {
-  const checkInDefault  = addDays(today(), 7);
-  const checkOutDefault = addDays(today(), 9);
+export function HotelSearch({ onSearch, loading, initialValues }: Props) {
+  const t = todayStr();
+  const defaultCheckIn  = addDays(t, 1);
+  const defaultCheckOut = addDays(t, 4);
 
-  const [cityQuery,   setCityQuery]   = useState("");
-  const [cityCode,    setCityCode]    = useState("LON");
-  const [cityName,    setCityName]    = useState("");
-  const [checkIn,     setCheckIn]     = useState(checkInDefault);
-  const [checkOut,    setCheckOut]    = useState(checkOutDefault);
-  const [adults,      setAdults]      = useState("2");
-  const [maxPrice,    setMaxPrice]    = useState<number | undefined>();
-  const [minRating,   setMinRating]   = useState<string>("");
+  const [cityCode,    setCityCode]    = useState(initialValues?.cityCode  ?? "");
+  const [cityName,    setCityName]    = useState(initialValues?.cityName  ?? "");
+  const [cityQuery,   setCityQuery]   = useState(initialValues?.cityName  ?? "");
+  const [checkIn,     setCheckIn]     = useState(initialValues?.checkIn   ?? defaultCheckIn);
+  const [checkOut,    setCheckOut]    = useState(initialValues?.checkOut  ?? defaultCheckOut);
+  const [adults,      setAdults]      = useState(String(initialValues?.adults ?? 2));
+  const [maxPrice,    setMaxPrice]    = useState<number | undefined>(initialValues?.maxPrice);
+  const [minRating,   setMinRating]   = useState(String(initialValues?.minRating ?? ""));
   const [showFilters, setShowFilters] = useState(false);
   const [dropOpen,    setDropOpen]    = useState(false);
   const dropRef = useRef<HTMLDivElement>(null);
 
+  // Show city name in the input when a city is selected, otherwise show what the user is typing
+  const inputDisplayValue = cityQuery !== (cityName) && cityQuery.length > 0 ? cityQuery : cityName;
+
   const { data: cityData, isFetching: cityFetching } = api.hotel.searchCities.useQuery(
     { keyword: cityQuery },
-    { enabled: cityQuery.length >= 1, staleTime: 30_000 }
+    { enabled: cityQuery.length >= 1 && cityQuery !== cityName, staleTime: 30_000 }
   );
 
   useEffect(() => {
@@ -60,6 +65,32 @@ export function HotelSearch({ onSearch, loading }: Props) {
     document.addEventListener("mousedown", handle);
     return () => document.removeEventListener("mousedown", handle);
   }, []);
+
+  // Ensure check-out is always after check-in
+  const handleCheckInChange = (val: string) => {
+    setCheckIn(val);
+    if (val >= checkOut) setCheckOut(addDays(val, 3));
+  };
+
+  const handleCityInput = (val: string) => {
+    setCityQuery(val);
+    setCityName(val); // keep them in sync while typing
+    if (val === "") {
+      setCityCode(""); // clear selection when input is cleared
+    }
+    setDropOpen(val.length > 0);
+  };
+
+  const selectCity = (c: City) => {
+    setCityCode(c.cityCode);
+    setCityName(c.name);
+    setCityQuery(c.name);
+    setDropOpen(false);
+  };
+
+  const clearCity = () => {
+    setCityCode(""); setCityName(""); setCityQuery(""); setDropOpen(false);
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -86,31 +117,35 @@ export function HotelSearch({ onSearch, loading }: Props) {
             <MapPin className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-primary/60" />
             <Input
               id="destination"
-              className="pl-9"
-              placeholder="City — e.g. London, Paris, Dubai…"
-              value={cityQuery || cityName}
-              onChange={e => { setCityQuery(e.target.value); setCityName(""); setDropOpen(true); }}
-              onFocus={() => setDropOpen(true)}
+              className="pl-9 pr-8"
+              placeholder="Where are you going?"
+              value={inputDisplayValue}
+              onChange={e => handleCityInput(e.target.value)}
+              onFocus={() => { if (cityQuery.length > 0 && cityQuery !== cityName) setDropOpen(true); }}
               autoComplete="off"
             />
-            {cityFetching && (
+            {cityFetching ? (
               <span className="absolute right-3 top-1/2 size-3.5 -translate-y-1/2 animate-spin rounded-full border-2 border-primary border-t-transparent" />
-            )}
+            ) : cityCode ? (
+              <button
+                type="button"
+                onClick={clearCity}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                aria-label="Clear destination"
+              >
+                <X className="size-3.5" />
+              </button>
+            ) : null}
           </div>
+
           {dropOpen && cityData?.cities && cityData.cities.length > 0 && (
             <ul className="absolute z-50 mt-1 w-full overflow-hidden rounded-lg border border-border bg-popover shadow-xl">
               {cityData.cities.map((c: City) => (
                 <li key={c.cityCode}>
                   <button
                     type="button"
-                    className="flex w-full items-center gap-2 px-3 py-2 text-sm transition-colors hover:bg-accent/10"
-                    onMouseDown={e => {
-                      e.preventDefault();
-                      setCityCode(c.cityCode);
-                      setCityName(c.name);
-                      setCityQuery("");
-                      setDropOpen(false);
-                    }}
+                    className="flex w-full items-center gap-2 px-3 py-2.5 text-sm transition-colors hover:bg-accent/10"
+                    onMouseDown={e => { e.preventDefault(); selectCity(c); }}
                   >
                     <MapPin className="size-3.5 shrink-0 text-primary/60" />
                     <span className="font-medium">{c.name}</span>
@@ -128,14 +163,14 @@ export function HotelSearch({ onSearch, loading }: Props) {
         <div>
           <Label htmlFor="check-in" className="mb-1.5 block">Check-in</Label>
           <div className="relative">
-            <Calendar className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-primary/60" />
+            <Calendar className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-primary/60 pointer-events-none" />
             <Input
               id="check-in"
               type="date"
               className="pl-9"
-              min={today()}
+              min={t}
               value={checkIn}
-              onChange={e => setCheckIn(e.target.value)}
+              onChange={e => handleCheckInChange(e.target.value)}
             />
           </div>
         </div>
@@ -144,12 +179,12 @@ export function HotelSearch({ onSearch, loading }: Props) {
         <div>
           <Label htmlFor="check-out" className="mb-1.5 block">Check-out</Label>
           <div className="relative">
-            <Calendar className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-primary/60" />
+            <Calendar className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-primary/60 pointer-events-none" />
             <Input
               id="check-out"
               type="date"
               className="pl-9"
-              min={checkIn || today()}
+              min={addDays(checkIn, 1)}
               value={checkOut}
               onChange={e => setCheckOut(e.target.value)}
             />
@@ -183,10 +218,10 @@ export function HotelSearch({ onSearch, loading }: Props) {
           variant="outline"
           size="sm"
           onClick={() => setShowFilters(v => !v)}
-          className="gap-1.5 border-primary/30 text-primary/80 hover:bg-primary/10"
+          className={`gap-1.5 border-primary/30 hover:bg-primary/10 ${showFilters ? "bg-primary/10 text-primary" : "text-primary/80"}`}
         >
           <SlidersHorizontal className="size-3.5" />
-          Filters
+          Filters{showFilters ? " ▴" : ""}
         </Button>
 
         <Button
@@ -199,7 +234,7 @@ export function HotelSearch({ onSearch, loading }: Props) {
           ) : (
             <Search className="size-4" />
           )}
-          Search Hotels
+          {cityCode ? "Search Hotels" : "Find Hotels"}
         </Button>
       </div>
 
