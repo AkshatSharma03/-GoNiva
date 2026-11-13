@@ -25,7 +25,12 @@ import { auth } from "~/server/auth";
  * @see https://trpc.io/docs/server/context
  */
 export const createTRPCContext = async (opts: { headers: Headers }) => {
-  const session = await auth();
+  const session =
+    process.env.AUTH_SECRET &&
+    process.env.AUTH_DISCORD_ID &&
+    process.env.AUTH_DISCORD_SECRET
+      ? await auth()
+      : null;
 
   return {
     session,
@@ -83,12 +88,6 @@ export const createTRPCRouter = t.router;
  */
 const timingMiddleware = t.middleware(async ({ next, path }) => {
   const start = Date.now();
-
-  if (t._config.isDev) {
-    // artificial delay in dev
-    const waitMs = Math.floor(Math.random() * 400) + 100;
-    await new Promise((resolve) => setTimeout(resolve, waitMs));
-  }
 
   const result = await next();
 

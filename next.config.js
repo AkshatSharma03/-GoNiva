@@ -8,6 +8,8 @@ import "./src/env.js";
 const config = {
   // Compress responses
   compress: true,
+  output: "standalone",
+  outputFileTracingRoot: import.meta.dirname,
 
   // Strict mode for catching issues early
   reactStrictMode: true,
@@ -18,11 +20,14 @@ const config = {
       {
         source: "/(.*)",
         headers: [
-          { key: "X-Content-Type-Options",  value: "nosniff" },
-          { key: "X-Frame-Options",          value: "DENY" },
-          { key: "X-XSS-Protection",         value: "1; mode=block" },
-          { key: "Referrer-Policy",           value: "strict-origin-when-cross-origin" },
-          { key: "Permissions-Policy",        value: "camera=(), microphone=(), geolocation=()" },
+          { key: "X-Content-Type-Options", value: "nosniff" },
+          { key: "X-Frame-Options", value: "DENY" },
+          { key: "X-XSS-Protection", value: "1; mode=block" },
+          { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+          {
+            key: "Permissions-Policy",
+            value: "camera=(), microphone=(), geolocation=()",
+          },
         ],
       },
     ];
