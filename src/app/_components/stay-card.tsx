@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import {
   hotelImage,
+  staySourceLabel,
   money,
   nights,
   bookingLink,
@@ -35,13 +36,12 @@ export function StayCard({
       <div
         className="stay-image"
         style={{
-          backgroundImage: `linear-gradient(0deg,rgba(15,7,24,.4),transparent 60%),url(${hotelImage(stay.hotel.hotelId)})`,
+          backgroundImage: `linear-gradient(0deg,rgba(15,7,24,.4),transparent 60%),url(${stay.hotel.imageUrl ?? hotelImage(stay.hotel.hotelId)})`,
         }}
       >
         <span className="photo-label">
-          {stay.isMock
-            ? "Sample stay · illustrative photo"
-            : "Illustrative photo"}
+          {staySourceLabel(stay)} ·{" "}
+          {stay.hotel.imageUrl ? "Property photo" : "Illustrative photo"}
         </span>
         <button
           className={`heart-button ${saved ? "is-saved" : ""}`}
@@ -97,7 +97,8 @@ export function StayCard({
                 <span> / night</span>
                 <small>
                   {money(stay.offer.price.total, stay.offer.price.currency)}{" "}
-                  total · {count} nights · {stay.search.adults} guests
+                  {stay.offer.isEstimate ? "estimated total" : "total"} ·{" "}
+                  {count} nights · {stay.search.adults} guests
                 </small>
               </>
             ) : (
@@ -112,6 +113,11 @@ export function StayCard({
             <ArrowUpRight size={19} />
           </button>
         </div>
+        {stay.offer?.additionalFees?.map((fee, i) => (
+          <small className="extra-fee" key={i}>
+            + {money(fee.amount, fee.currency)} {fee.description} at property
+          </small>
+        ))}
         {onCompare && (
           <button
             className={`compare-button ${compare ? "selected" : ""}`}

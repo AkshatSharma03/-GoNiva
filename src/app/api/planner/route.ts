@@ -1,3 +1,4 @@
+import { hotelIntegrationStatus } from "~/server/liteapi-config";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { cities, searchSchema } from "~/lib/travel/model";
@@ -178,6 +179,7 @@ export async function POST(request: Request) {
     const city = cities.find((c) => c.cityCode === result.cityCode);
     if (!city) throw new Error("Unsupported destination");
     const nextSearch = searchSchema.parse({
+      ...search,
       ...result,
       cityName: city.name,
       maxPrice: result.maxPrice ?? undefined,
@@ -201,12 +203,8 @@ export async function POST(request: Request) {
 export function GET() {
   return NextResponse.json({
     mode: process.env.OPENAI_API_KEY ? "ai" : "local",
-    hotels:
-      process.env.AMADEUS_CLIENT_ID && process.env.AMADEUS_CLIENT_SECRET
-        ? process.env.AMADEUS_ENV === "production"
-          ? "live"
-          : "sandbox"
-        : "sample",
+    hotels: hotelIntegrationStatus(),
+    hotelProvider: "liteapi",
     cardPrograms: "verified-catalog",
   });
 }

@@ -1,4 +1,5 @@
 "use client";
+import { countryCodes } from "~/lib/travel/countries";
 import { useState, useId } from "react";
 import {
   MapPin,
@@ -122,7 +123,28 @@ export function TripSearch({
         </button>
       </div>
       <div className="search-bottom">
-        <span>Good trips start with a little curiosity.</span>
+        <label className="nationality-label">
+          Guest nationality
+          <select
+            aria-label="Guest nationality"
+            value={value.guestNationality}
+            onChange={(e) => update("guestNationality", e.target.value)}
+          >
+            {countryCodes
+              .map((code) => ({
+                code,
+                name:
+                  new Intl.DisplayNames(["en"], { type: "region" }).of(code) ??
+                  code,
+              }))
+              .sort((a, b) => a.name.localeCompare(b.name))
+              .map(({ code, name }) => (
+                <option key={code} value={code}>
+                  {name}
+                </option>
+              ))}
+          </select>
+        </label>
         <button
           type="button"
           className={`text-button ${filters ? "active" : ""}`}

@@ -1,8 +1,10 @@
 import { z } from "zod";
+import { nationalitySchema } from "./countries";
 
 export const cities = [
   {
     cityCode: "LON",
+    countryCode: "GB",
     name: "London",
     country: "United Kingdom",
     mood: "Historic streets, modern discoveries",
@@ -17,6 +19,7 @@ export const cities = [
   },
   {
     cityCode: "PAR",
+    countryCode: "FR",
     name: "Paris",
     country: "France",
     mood: "A little romance. A lot to discover.",
@@ -31,6 +34,7 @@ export const cities = [
   },
   {
     cityCode: "TYO",
+    countryCode: "JP",
     name: "Tokyo",
     country: "Japan",
     mood: "Find wonder around every corner",
@@ -39,6 +43,7 @@ export const cities = [
   },
   {
     cityCode: "BCN",
+    countryCode: "ES",
     name: "Barcelona",
     country: "Spain",
     mood: "Slow mornings, Mediterranean evenings",
@@ -53,6 +58,7 @@ export const cities = [
   },
   {
     cityCode: "NYC",
+    countryCode: "US",
     name: "New York",
     country: "United States",
     mood: "Your next main-character moment",
@@ -67,6 +73,7 @@ export const cities = [
   },
   {
     cityCode: "DXB",
+    countryCode: "AE",
     name: "Dubai",
     country: "United Arab Emirates",
     mood: "Desert horizons and dazzling nights",
@@ -81,6 +88,7 @@ export const cities = [
   },
   {
     cityCode: "ROM",
+    countryCode: "IT",
     name: "Rome",
     country: "Italy",
     mood: "Take the scenic route through history",
@@ -95,6 +103,7 @@ export const cities = [
   },
   {
     cityCode: "BKK",
+    countryCode: "TH",
     name: "Bangkok",
     country: "Thailand",
     mood: "Street food and golden-hour adventures",
@@ -109,6 +118,7 @@ export const cities = [
   },
   {
     cityCode: "SIN",
+    countryCode: "SG",
     name: "Singapore",
     country: "Singapore",
     mood: "Garden city, endless possibilities",
@@ -123,6 +133,7 @@ export const cities = [
   },
   {
     cityCode: "AMS",
+    countryCode: "NL",
     name: "Amsterdam",
     country: "Netherlands",
     mood: "Canals, culture, and cozy corners",
@@ -157,6 +168,7 @@ export const searchFields = z.object({
   checkIn: dateString,
   checkOut: dateString,
   adults: z.number().int().min(1).max(6),
+  guestNationality: nationalitySchema.default("US"),
   maxPrice: z.number().positive().max(100000).optional(),
   minRating: z.number().int().min(1).max(5).optional(),
   amenities: z.array(z.string().max(30)).max(10).default([]),
@@ -183,6 +195,7 @@ export function defaultSearch(): Search {
     checkIn: addDays(today(), 7),
     checkOut: addDays(today(), 10),
     adults: 2,
+    guestNationality: "US",
     amenities: [],
   };
 }
@@ -196,12 +209,16 @@ export interface Hotel {
   distance?: string;
   latitude?: number;
   longitude?: number;
+  imageUrl?: string;
 }
 export interface Offer {
   offerId: string;
   hotelId: string;
   hotelName: string;
   price: { currency: string; total: string; base?: string };
+  additionalFees?: { amount: number; currency: string; description: string }[];
+  payAtProperty?: { amount: number; currency: string; description: string }[];
+  isEstimate?: boolean;
   room?: { type: string; description?: string; bedType?: string };
   checkInDate: string;
   checkOutDate: string;
@@ -215,6 +232,8 @@ export interface SavedStay {
   offer?: Offer;
   search: Search;
   isMock: boolean;
+  source?: "sample" | "sandbox" | "live";
+  provider?: "liteapi";
   savedAt: string;
 }
 export interface Message {
@@ -299,4 +318,14 @@ export function itinerary(search: Search): Activity[] {
       },
     ],
   ).flat();
+}
+
+export function staySourceLabel(stay: SavedStay) {
+  return stay.isMock
+    ? "Sample stay"
+    : stay.source === "sandbox"
+      ? "Nuitee sandbox"
+      : stay.provider === "liteapi" && stay.source === "live"
+        ? "Nuitee estimate"
+        : "Saved quote";
 }

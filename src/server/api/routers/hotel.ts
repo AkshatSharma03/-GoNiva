@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 import { cities, searchSchema } from "~/lib/travel/model";
+import { HotelProviderError } from "~/server/liteapi-config";
 import { searchHotels } from "~/server/hotels";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 export const hotelRouter = createTRPCRouter({
@@ -18,7 +19,15 @@ export const hotelRouter = createTRPCRouter({
   searchHotels: publicProcedure.input(searchSchema).query(async ({ input }) => {
     try {
       return await searchHotels(input);
-    } catch {
+    } catch (error) {
+      if (error instanceof HotelProviderError)
+        throw new TRPCError({
+          code:
+            error.kind === "rate_limit"
+              ? "TOO_MANY_REQUESTS"
+              : "SERVICE_UNAVAILABLE",
+          message: error.message,
+        });
       throw new TRPCError({
         code: "SERVICE_UNAVAILABLE",
         message:

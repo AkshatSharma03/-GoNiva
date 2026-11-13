@@ -4,6 +4,10 @@ import { z } from "zod";
 import { searchFields } from "./model";
 import { cardIdSchema } from "./cards";
 const hotel = z.object({
+  imageUrl: z
+    .url()
+    .regex(/^https:\/\//)
+    .optional(),
   hotelId: z.string(),
   name: z.string(),
   cityCode: z.string(),
@@ -14,7 +18,15 @@ const hotel = z.object({
   latitude: z.number().optional(),
   longitude: z.number().optional(),
 });
+const propertyFee = z.object({
+  amount: z.number().finite().nonnegative(),
+  currency: z.string().regex(/^[A-Z]{3}$/),
+  description: z.string(),
+});
 const offer = z.object({
+  isEstimate: z.boolean().optional(),
+  additionalFees: z.array(propertyFee).optional(),
+  payAtProperty: z.array(propertyFee).optional(),
   offerId: z.string(),
   hotelId: z.string(),
   hotelName: z.string(),
@@ -72,6 +84,8 @@ export const workspaceSchema = z.object({
       offer: offer.optional(),
       search: searchFields,
       isMock: z.boolean(),
+      source: z.enum(["sample", "sandbox", "live"]).optional(),
+      provider: z.literal("liteapi").optional(),
       savedAt: z.string(),
     }),
   ),

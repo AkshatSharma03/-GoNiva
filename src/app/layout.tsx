@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   },
   description:
     "Your personal travel space. Plan with Niva, discover stays, compare favorites, and make every day of your trip your own.",
-  keywords: ["hotels", "booking", "travel", "Amadeus", "accommodation"],
+  keywords: ["hotels", "booking", "travel", "Nuitee", "accommodation"],
   authors: [{ name: "Goniva" }],
   openGraph: {
     type: "website",

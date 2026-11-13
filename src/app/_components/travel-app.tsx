@@ -1308,7 +1308,12 @@ export function TravelApp() {
                     backgroundImage: `url(${hotelImageFor(modal.stay)})`,
                   }}
                 >
-                  <span>Illustrative photograph</span>
+                  <span>
+                    {staySourceLabel(modal.stay)} ·{" "}
+                    {modal.stay.hotel.imageUrl
+                      ? "Property photograph"
+                      : "Illustrative photograph"}
+                  </span>
                 </div>
                 <div className="detail-facts">
                   <div>
@@ -1322,7 +1327,11 @@ export function TravelApp() {
                     <strong>{modal.stay.search.adults} guests</strong>
                   </div>
                   <div>
-                    <small>Stay total</small>
+                    <small>
+                      {modal.stay.offer?.isEstimate
+                        ? "Estimated stay total"
+                        : "Stay total"}
+                    </small>
                     <strong>
                       {modal.stay.offer
                         ? money(
@@ -1348,8 +1357,19 @@ export function TravelApp() {
                 <p className="detail-notice">
                   {modal.stay.isMock
                     ? "This is a sample property with an illustrative price, not a real booking offer. Search real accommodation at this destination with the provider."
-                    : "This is a search handoff, not a reservation. Confirm the property, final price, occupancy, and cancellation terms directly with the provider."}
+                    : modal.stay.source === "sandbox"
+                      ? "Nuitee sandbox test quote. This is not bookable inventory. Booking.com is an independent search with its own availability and prices."
+                      : "Nuitee indicative public estimate, subject to revalidation. Booking.com is an independent search with its own prices. No reservation is created. Confirm occupancy, nationality eligibility, and cancellation terms before booking."}
                 </p>
+                {modal.stay.offer?.payAtProperty?.map((fee, i) => (
+                  <p className="detail-notice" key={i}>
+                    {money(fee.amount, fee.currency)} {fee.description} payable
+                    at property ·{" "}
+                    {fee.currency === "USD"
+                      ? "included in estimated total"
+                      : "additional to USD estimate"}
+                  </p>
+                ))}
                 <div className="dialog-actions">
                   <button
                     className="secondary-button"
@@ -1413,7 +1433,7 @@ export function TravelApp() {
                       Basic planning understands supported destinations, dates,
                       guests, budgets, stars, and amenities. AI conversation is
                       enabled when the server has an OpenAI key. Hotel search
-                      uses labeled samples until Amadeus is configured.
+                      uses labeled samples until Nuitee/LiteAPI is configured.
                     </p>
                   </div>
                 </div>
@@ -1810,9 +1830,9 @@ function ActivityForm({
     </form>
   );
 }
-import { hotelImage } from "~/lib/travel/model";
+import { hotelImage, staySourceLabel } from "~/lib/travel/model";
 function hotelImageFor(s: SavedStay) {
-  return hotelImage(s.hotel.hotelId);
+  return s.hotel.imageUrl ?? hotelImage(s.hotel.hotelId);
 }
 
 function field(form: FormData, key: string) {

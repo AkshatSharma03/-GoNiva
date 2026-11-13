@@ -51,9 +51,9 @@ test("provider handoff contains dates, destination, and correct guest count",()=
  assert.equal(link.hostname,"www.booking.com");assert.equal(link.searchParams.get("checkin"),search.checkIn);assert.equal(link.searchParams.get("group_adults"),"2");assert.ok(link.searchParams.get("ss").includes("London"));
 });
 test("configured provider errors surface instead of substituting sample prices",async()=>{
- const previous={id:process.env.AMADEUS_CLIENT_ID,secret:process.env.AMADEUS_CLIENT_SECRET,fetch:globalThis.fetch};
- process.env.AMADEUS_CLIENT_ID="test";process.env.AMADEUS_CLIENT_SECRET="test";globalThis.fetch=async()=>new Response("Unavailable",{status:503});
- try{await assert.rejects(searchHotels(defaultSearch()),/authentication failed/);}finally{globalThis.fetch=previous.fetch;for(const [key,value] of [["AMADEUS_CLIENT_ID",previous.id],["AMADEUS_CLIENT_SECRET",previous.secret]])if(value===undefined)delete process.env[key];else process.env[key]=value;}
+ const previous={id:process.env.LITEAPI_API_KEY,secret:process.env.LITEAPI_ENV,fetch:globalThis.fetch};
+ process.env.LITEAPI_API_KEY="sand_test";process.env.LITEAPI_ENV="sandbox";globalThis.fetch=async()=>new Response("Unavailable",{status:503});
+ try{await assert.rejects(searchHotels(defaultSearch()),/temporarily unavailable/);}finally{globalThis.fetch=previous.fetch;for(const [key,value] of [["LITEAPI_API_KEY",previous.id],["LITEAPI_ENV",previous.secret]])if(value===undefined)delete process.env[key];else process.env[key]=value;}
 });
 test("huge and malformed conversational dates cannot crash the basic planner",()=>{
  for(const text of ["2027-99-99 to 2027-12-12 for 4 nights",`Paris for ${"9".repeat(1000)} nights`]) {

@@ -122,8 +122,8 @@ export function StayResults({
           {data.source === "sample"
             ? "Sample collection"
             : data.source === "sandbox"
-              ? "Amadeus sandbox"
-              : "Amadeus live quotes"}{" "}
+              ? "Nuitee sandbox"
+              : "Nuitee live estimates"}{" "}
           <span>— {data.notice}</span>
         </p>
       )}
@@ -178,6 +178,8 @@ export function StayResults({
                 offer: offers.get(hotel.hotelId),
                 search,
                 isMock: data?.isMock ?? true,
+                source: data?.source,
+                provider: data?.provider,
                 savedAt: new Date().toISOString(),
               };
               return (
