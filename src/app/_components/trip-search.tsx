@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useId } from "react";
 import {
   MapPin,
   CalendarDays,
@@ -22,6 +22,7 @@ export function TripSearch({
   initial: Search;
   onSearch: (s: Search) => void;
 }) {
+  const filtersId = useId();
   const [value, setValue] = useState(initial),
     [filters, setFilters] = useState(false),
     [error, setError] = useState("");
@@ -127,6 +128,7 @@ export function TripSearch({
           className={`text-button ${filters ? "active" : ""}`}
           onClick={() => setFilters(!filters)}
           aria-expanded={filters}
+          aria-controls={filtersId}
         >
           <SlidersHorizontal size={13} /> Preferences
           {value.maxPrice || value.minRating || value.amenities.length > 0
@@ -135,7 +137,7 @@ export function TripSearch({
         </button>
       </div>
       {filters && (
-        <div className="search-filters">
+        <div className="search-filters" id={filtersId}>
           <label>
             Total stay budget · USD
             <input

@@ -27,7 +27,9 @@ npm start      # Serve the production build
 - Hotel search with validated dates (1–30 nights), 1–6 guests, total-stay budgets, ratings, and amenities. Results are presented five at a time with sorting and explicit empty/error/loading states.
 - Hotel details and booking-provider search handoff carrying destination, dates, and occupancy.
 - Saved stays and side-by-side comparison of up to three options, including dates and occupancy.
-- Persistent conversations, renamed and pinned trips, custom folders, and trip organization.
+- Persistent conversations, renamed and pinned trips, custom folders, and trip organization. Recent-trip cards help resume planning.
+- URL-based view/trip recovery across refresh and browser Back, plus a phone navigation bar and keyboard-accessible mobile drawer.
+- Visible applied-filter chips, one-click empty-result recovery, and undo when removing a saved stay.
 - Suggested daily itineraries with editable activities, times, notes, and text export.
 - Browser-local persistence, validated JSON backup export/restore, responsive navigation, keyboard-accessible dialogs, and reduced-motion support.
 

@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { ArrowLeft, ArrowRight, RotateCcw, SearchX } from "lucide-react";
+import { ArrowLeft, ArrowRight, RotateCcw, SearchX, X } from "lucide-react";
 import { api } from "~/trpc/react";
 import { StayCard } from "./stay-card";
 import { type Search, type SavedStay } from "~/lib/travel/model";
@@ -9,8 +9,10 @@ export function StayResults({
   saved,
   onSave,
   onDetails,
+  onSearch,
 }: {
   search: Search;
+  onSearch: (s: Search) => void;
   saved: SavedStay[];
   onSave: (s: SavedStay) => void;
   onDetails: (s: SavedStay) => void;
@@ -31,6 +33,17 @@ export function StayResults({
         ? Number(b.rating ?? 0) - Number(a.rating ?? 0)
         : 0,
   );
+  const hasFilters =
+    search.maxPrice !== undefined ||
+    search.minRating !== undefined ||
+    search.amenities.length > 0;
+  const clearFilters = () =>
+    onSearch({
+      ...search,
+      maxPrice: undefined,
+      minRating: undefined,
+      amenities: [],
+    });
   const pages = Math.ceil(hotels.length / 5);
   const current = Math.min(page, Math.max(0, pages - 1));
   return (
@@ -63,6 +76,44 @@ export function StayResults({
           </select>
         </label>
       </div>
+      {hasFilters && (
+        <div className="applied-filters" aria-label="Applied filters">
+          <span>Your preferences</span>
+          {search.maxPrice !== undefined && (
+            <button
+              aria-label="Remove budget filter"
+              onClick={() => onSearch({ ...search, maxPrice: undefined })}
+            >
+              Up to ${search.maxPrice} total <X size={12} />
+            </button>
+          )}
+          {search.minRating !== undefined && (
+            <button
+              aria-label="Remove star rating filter"
+              onClick={() => onSearch({ ...search, minRating: undefined })}
+            >
+              {search.minRating}+ stars <X size={12} />
+            </button>
+          )}
+          {search.amenities.map((a) => (
+            <button
+              key={a}
+              aria-label={`Remove ${a.toLowerCase()} filter`}
+              onClick={() =>
+                onSearch({
+                  ...search,
+                  amenities: search.amenities.filter((v) => v !== a),
+                })
+              }
+            >
+              {a.toLowerCase().replace(/_/g, " ")} <X size={12} />
+            </button>
+          ))}
+          <button className="clear-all-filters" onClick={clearFilters}>
+            Clear all
+          </button>
+        </div>
+      )}
       {data && (
         <p className="data-notice">
           <span
@@ -77,7 +128,11 @@ export function StayResults({
         </p>
       )}
       {query.isPending ? (
-        <div className="stay-grid">
+        <div
+          className="stay-grid"
+          aria-busy="true"
+          aria-label="Finding hotel recommendations"
+        >
           {[0, 1, 2].map((i) => (
             <div key={i} className="stay-skeleton">
               <div />
@@ -107,6 +162,11 @@ export function StayResults({
             Try increasing your total budget, lowering the star rating, or
             removing an amenity.
           </p>
+          {hasFilters && (
+            <button className="secondary-button" onClick={clearFilters}>
+              <RotateCcw size={14} /> Reset preferences
+            </button>
+          )}
         </div>
       ) : (
         <>
@@ -141,7 +201,7 @@ export function StayResults({
               >
                 <ArrowLeft size={17} />
               </button>
-              <span>
+              <span aria-live="polite">
                 Collection {current + 1} <span>of {pages}</span>
               </span>
               <button

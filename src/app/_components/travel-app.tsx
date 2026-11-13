@@ -50,7 +50,9 @@ import { StayCard, ProviderLink } from "./stay-card";
 import { CardPerks } from "./card-perks";
 import { detectOwnedCards, cards } from "~/lib/travel/cards";
 
-type View = "explore" | "saved" | "trips" | "cards";
+import { type View } from "~/lib/travel/navigation";
+import { useTravelNavigation } from "./use-travel-navigation";
+import { ResumeTrips } from "./resume-trips";
 type Modal =
   | { type: "stay"; stay: SavedStay }
   | { type: "settings" }
@@ -62,9 +64,8 @@ const uid = () => crypto.randomUUID();
 export function TravelApp() {
   const { workspace, setWorkspace, ready, storageError, clearStorageError } =
     useWorkspace();
-  const [view, setView] = useState<View>("explore"),
-    [activeId, setActiveId] = useState<string | null>(null),
-    [mobile, setMobile] = useState(false),
+  const { view, setView, activeId, setActiveId } = useTravelNavigation();
+  const [mobile, setMobile] = useState(false),
     [modal, setModal] = useState<Modal>(null),
     [draft, setDraft] = useState(""),
     [busy, setBusy] = useState(false),
@@ -75,6 +76,13 @@ export function TravelApp() {
     [savedCity, setSavedCity] = useState("all"),
     [historyQuery, setHistoryQuery] = useState("");
   const [initialSearch] = useState(defaultSearch);
+  const [isPhone, setIsPhone] = useState(false);
+  const sidebarRef = useRef<HTMLElement>(null);
+  const effectiveSavedCity =
+    savedCity !== "all" &&
+    !workspace.saved.some((s) => s.search.cityName === savedCity)
+      ? "all"
+      : savedCity;
   const messageEnd = useRef<HTMLDivElement>(null),
     chatInput = useRef<HTMLTextAreaElement>(null),
     busyRef = useRef(false);
@@ -100,6 +108,52 @@ export function TravelApp() {
       .catch(() => {});
     return () => controller.abort();
   }, []);
+  useEffect(() => {
+    const media = window.matchMedia("(max-width: 650px)");
+    const sync = () => {
+      setIsPhone(media.matches);
+      if (!media.matches) setMobile(false);
+    };
+    sync();
+    media.addEventListener("change", sync);
+    return () => media.removeEventListener("change", sync);
+  }, []);
+  useEffect(() => {
+    if (!mobile) return;
+    const previouslyFocused = document.activeElement as HTMLElement | null;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const close =
+      sidebarRef.current?.querySelector<HTMLButtonElement>(".drawer-close");
+    close?.focus();
+    const keyboard = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setMobile(false);
+        return;
+      }
+      if (event.key !== "Tab") return;
+      const controls = Array.from(
+        sidebarRef.current?.querySelectorAll<HTMLElement>(
+          'button:not(:disabled),input:not(:disabled),a[href],select,textarea,[tabindex="0"]',
+        ) ?? [],
+      ).filter((el) => el.getClientRects().length > 0);
+      const first = controls[0],
+        last = controls.at(-1);
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last?.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first?.focus();
+      }
+    };
+    document.addEventListener("keydown", keyboard);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener("keydown", keyboard);
+      previouslyFocused?.focus();
+    };
+  }, [mobile]);
   function updateTrip(id: string, fn: (t: Trip) => Trip) {
     setWorkspace((w) => ({
       ...w,
@@ -149,6 +203,20 @@ export function TravelApp() {
     if (exists) setCompare((c) => c.filter((id) => id !== stay.id));
     toast.success(
       exists ? "Stay removed from your collection" : "Saved to your collection",
+      exists
+        ? {
+            action: {
+              label: "Undo",
+              onClick: () =>
+                setWorkspace((w) => ({
+                  ...w,
+                  saved: w.saved.some((s) => s.id === stay.id)
+                    ? w.saved
+                    : [stay, ...w.saved],
+                })),
+            },
+          }
+        : undefined,
     );
   }
   async function send(text: string) {
@@ -260,6 +328,16 @@ export function TravelApp() {
   }
   return (
     <div className="app-shell">
+      <a
+        className="skip-link"
+        href="#main-content"
+        onClick={(e) => {
+          e.preventDefault();
+          document.getElementById("main-content")?.focus();
+        }}
+      >
+        Skip to content
+      </a>
       {mobile && (
         <button
           className="mobile-backdrop"
@@ -268,9 +346,20 @@ export function TravelApp() {
         />
       )}
       <aside
+        ref={sidebarRef}
+        inert={isPhone && !mobile}
+        role={mobile ? "dialog" : undefined}
+        aria-modal={mobile ? true : undefined}
         className={`sidebar ${mobile ? "open" : ""}`}
         aria-label="Main navigation"
       >
+        <button
+          className="drawer-close circle-button"
+          aria-label="Close navigation menu"
+          onClick={() => setMobile(false)}
+        >
+          <X size={18} />
+        </button>
         <button className="brand" onClick={newTrip} disabled={busy}>
           <span className="brand-mark">
             <Compass size={23} />
@@ -286,12 +375,14 @@ export function TravelApp() {
         <nav className="primary-nav">
           <button
             className={view === "explore" ? "selected" : ""}
+            aria-current={view === "explore" ? "page" : undefined}
             onClick={() => nav("explore")}
           >
             <Compass size={18} /> Discover <span>✦</span>
           </button>
           <button
             className={view === "saved" ? "selected" : ""}
+            aria-current={view === "saved" ? "page" : undefined}
             onClick={() => nav("saved")}
           >
             <Heart size={18} /> Saved stays{" "}
@@ -299,6 +390,7 @@ export function TravelApp() {
           </button>
           <button
             className={view === "trips" ? "selected" : ""}
+            aria-current={view === "trips" ? "page" : undefined}
             onClick={() => nav("trips")}
           >
             <CalendarDays size={18} /> My trips{" "}
@@ -306,6 +398,7 @@ export function TravelApp() {
           </button>
           <button
             className={view === "cards" ? "selected" : ""}
+            aria-current={view === "cards" ? "page" : undefined}
             onClick={() => nav("cards")}
           >
             <CreditCard size={18} /> Card perks <span>✧</span>
@@ -439,7 +532,7 @@ export function TravelApp() {
           </button>
         </div>
       </aside>
-      <div className="main-shell">
+      <div className="main-shell" inert={mobile}>
         <header className="topbar">
           <div>
             <button
@@ -475,7 +568,7 @@ export function TravelApp() {
             </button>
           </div>
         </header>
-        <main className="main-content">
+        <main className="main-content" id="main-content" tabIndex={-1}>
           {!ready ? (
             <div className="empty-panel">
               <Sparkles className="spin" />
@@ -488,8 +581,32 @@ export function TravelApp() {
                   {storageError}
                 </div>
               )}
+              {activeId && !active && (
+                <div className="missing-trip-notice" role="status">
+                  <span>
+                    This trip isn’t saved on this device. Your other plans are
+                    still here.
+                  </span>
+                  <button
+                    className="text-button"
+                    onClick={() => {
+                      setActiveId(null);
+                      nav("trips");
+                    }}
+                  >
+                    Find my trips <ArrowRight size={14} />
+                  </button>
+                </div>
+              )}
               {view === "explore" && (
                 <>
+                  {!active && (
+                    <ResumeTrips
+                      trips={workspace.trips}
+                      onOpen={(t) => openTrip(t)}
+                      onAll={() => nav("trips")}
+                    />
+                  )}
                   <section className={`hero ${active ? "compact" : ""}`}>
                     <div className="hero-orbit orbit-one" />
                     <div className="hero-orbit orbit-two" />
@@ -517,6 +634,32 @@ export function TravelApp() {
                         "Tell Niva what you’re dreaming of. We’ll take it from here."}
                     </p>
                   </section>
+                  {active && (
+                    <div className="active-trip-strip">
+                      <span className="trip-strip-icon">
+                        <MapPin size={18} />
+                      </span>
+                      <div>
+                        <strong>{active.title}</strong>
+                        <span>
+                          {search.checkIn} — {search.checkOut} · {search.adults}{" "}
+                          guests
+                        </span>
+                      </div>
+                      <button
+                        className="secondary-button"
+                        onClick={() => nav("trips")}
+                      >
+                        <CalendarDays size={14} /> Itinerary
+                      </button>
+                      <button
+                        className="text-button"
+                        onClick={() => nav("cards")}
+                      >
+                        <CreditCard size={14} /> Card perks
+                      </button>
+                    </div>
+                  )}
                   <section
                     className={`niva-panel ${active?.messages.length ? "has-conversation" : ""}`}
                     aria-label="Plan with Niva"
@@ -650,6 +793,7 @@ export function TravelApp() {
                       <StayResults
                         key={JSON.stringify(search)}
                         search={search}
+                        onSearch={submitSearch}
                         saved={workspace.saved}
                         onSave={toggleSave}
                         onDetails={(stay) => setModal({ type: "stay", stay })}
@@ -782,7 +926,7 @@ export function TravelApp() {
                       Destination{" "}
                       <select
                         aria-label="Filter saved destination"
-                        value={savedCity}
+                        value={effectiveSavedCity}
                         onChange={(e) => setSavedCity(e.target.value)}
                       >
                         <option value="all">All destinations</option>
@@ -809,8 +953,8 @@ export function TravelApp() {
                       {workspace.saved
                         .filter(
                           (s) =>
-                            savedCity === "all" ||
-                            s.search.cityName === savedCity,
+                            effectiveSavedCity === "all" ||
+                            s.search.cityName === effectiveSavedCity,
                         )
                         .map((stay) => (
                           <StayCard
@@ -1529,6 +1673,33 @@ export function TravelApp() {
           </Dialog.Content>
         </Dialog.Portal>
       </Dialog.Root>
+      <nav
+        className="mobile-bottom-nav"
+        aria-label="Quick navigation"
+        inert={mobile}
+      >
+        {(
+          [
+            { id: "explore", label: "Discover", Icon: Compass },
+            { id: "saved", label: "Saved", Icon: Heart },
+            { id: "trips", label: "Trips", Icon: CalendarDays },
+            { id: "cards", label: "Card perks", Icon: CreditCard },
+          ] as const
+        ).map(({ id, label, Icon }) => (
+          <button
+            key={id}
+            className={view === id ? "selected" : ""}
+            aria-current={view === id ? "page" : undefined}
+            onClick={() => nav(id)}
+          >
+            <Icon size={20} />
+            <span>{label}</span>
+            {id === "saved" && workspace.saved.length > 0 && (
+              <b>{workspace.saved.length}</b>
+            )}
+          </button>
+        ))}
+      </nav>
     </div>
   );
 }

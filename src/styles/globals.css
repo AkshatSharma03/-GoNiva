@@ -2880,3 +2880,1098 @@ em {
     font-size: 32px;
   }
 }
+
+/* A clearer, more comfortable planning workspace */
+:root {
+  --soft: #c2afd2;
+  --panel: #21142e;
+  --line: #49305b;
+}
+.app-shell {
+  background:
+    radial-gradient(ellipse at 74% 5%, #49305a20, transparent 42%), #130b1c;
+}
+.main-content {
+  max-width: 1410px;
+}
+.main-content:focus {
+  outline: none;
+}
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 25;
+  backdrop-filter: blur(18px);
+  background: #160d20ed;
+}
+.primary-nav > button {
+  font-size: 14px;
+  min-height: 44px;
+}
+.sidebar-label {
+  font-size: 10px;
+  color: #a089b2;
+  letter-spacing: 1.4px;
+}
+.sidebar-empty {
+  color: #a18bad;
+  font-size: 12px;
+}
+.conversation button:first-child {
+  font-size: 12px;
+}
+.folder-list > button {
+  font-size: 13px;
+}
+.profile-button {
+  font-size: 12px;
+}
+.profile-button small {
+  font-size: 10px;
+  color: #a18bad;
+}
+.sidebar-note {
+  font-size: 11px;
+}
+.breadcrumb {
+  font-size: 12px;
+}
+.hero-description {
+  font-size: 14px;
+  color: #b8a4c8;
+}
+.hero > .eyebrow {
+  font-size: 10px;
+}
+.hero {
+  padding: 50px 0 30px;
+}
+.hero.compact {
+  padding-top: 31px;
+}
+.hero h1 {
+  letter-spacing: -2px;
+}
+.niva-panel {
+  max-width: 900px;
+  background: linear-gradient(125deg, #30203eaa, #20132d);
+  border-color: #644276;
+  box-shadow: 0 15px 55px #0002;
+}
+.niva-heading h2 {
+  font-size: 16px;
+}
+.niva-heading p {
+  font-size: 12px;
+  color: #b29ac2;
+}
+.niva-heading h2 > span {
+  font-size: 10px;
+}
+.assistant-status {
+  font-size: 10px;
+}
+.chat-form textarea {
+  font-size: 14px;
+  line-height: 1.8;
+  min-height: 84px;
+  padding: 16px;
+}
+.chat-form textarea::placeholder {
+  color: #ad96bf;
+}
+.chat-form-bottom > span {
+  font-size: 11px;
+  color: #a18ab2;
+}
+.send-button {
+  height: 36px;
+  width: 36px;
+  border-radius: 9px;
+}
+.prompt-chips > button {
+  font-size: 11px;
+  padding: 9px 10px;
+  min-height: 36px;
+}
+.or-divider {
+  font-size: 11px;
+  color: #a38ab4;
+  margin: 22px auto;
+}
+.search-panel {
+  background: #21142e;
+  border-color: #503664;
+}
+.search-field > span {
+  font-size: 11px;
+  color: #bca5cc;
+}
+.search-field select,
+.search-field input {
+  font-size: 13px;
+  min-height: 26px;
+}
+.search-bottom > span {
+  font-size: 10px;
+  color: #a78cb8;
+}
+.search-bottom .text-button {
+  font-size: 11px;
+  padding: 6px;
+}
+.search-submit {
+  font-size: 12px;
+}
+.search-filters > label,
+.amenity-filters > span {
+  font-size: 12px;
+}
+.search-filters input[type="number"],
+.search-filters select {
+  font-size: 13px;
+}
+.amenity-filters label {
+  font-size: 12px;
+  min-height: 32px;
+  gap: 7px;
+}
+.amenity-filters input {
+  width: 15px;
+  height: 15px;
+}
+.section-heading .eyebrow {
+  font-size: 10px;
+  color: #ab90be;
+}
+.section-heading h2 {
+  font-size: 32px;
+}
+.section-heading > div > p:last-child {
+  font-size: 12px;
+  color: #ad92c0;
+}
+.sort-label {
+  font-size: 11px;
+}
+.sort-label select,
+.collection-toolbar select {
+  font-size: 12px;
+  min-height: 38px;
+}
+.data-notice {
+  font-size: 12px;
+  color: #d0b8e0;
+}
+.data-notice > span:not(.status-dot) {
+  color: #b79cc8;
+}
+.stay-body .eyebrow {
+  font-size: 9px;
+}
+.stay-title {
+  font-size: 17px;
+  line-height: 1.5;
+}
+.stay-address {
+  font-size: 11px;
+  color: #b499c6;
+  line-height: 1.7;
+}
+.amenity-list > span {
+  font-size: 10px;
+  padding: 5px 8px;
+  color: #c9acd9;
+}
+.stay-price small {
+  font-size: 10px;
+  color: #aa8ebd;
+  line-height: 1.7;
+}
+.stay-price span {
+  font-size: 12px;
+}
+.stay-price strong {
+  font-size: 25px;
+}
+.circle-button {
+  width: 36px;
+  height: 36px;
+}
+.heart-button {
+  width: 36px;
+  height: 36px;
+}
+.photo-label {
+  font-size: 9px;
+}
+.stay-image {
+  height: 190px;
+}
+.stay-price {
+  margin-top: 18px;
+  padding-top: 17px;
+}
+.empty-panel p {
+  font-size: 13px;
+  color: #b598c6;
+}
+.empty-panel h3 {
+  font-size: 24px;
+}
+.secondary-button,
+.primary-button {
+  font-size: 12px;
+  min-height: 40px;
+}
+.text-button {
+  font-size: 12px;
+}
+.page-heading > p:last-child {
+  font-size: 14px;
+  color: #b499c6;
+}
+.page-heading .eyebrow {
+  font-size: 10px;
+}
+.collection-toolbar {
+  font-size: 13px;
+}
+.collection-toolbar > label {
+  font-size: 12px;
+}
+.compare-button {
+  font-size: 12px;
+  min-height: 40px;
+}
+.compare-bar > span {
+  font-size: 12px;
+}
+.day-heading > span {
+  font-size: 11px;
+}
+.activity > time {
+  font-size: 12px;
+  width: 39px;
+}
+.activity strong {
+  font-size: 13px;
+  line-height: 1.6;
+}
+.activity p {
+  font-size: 12px;
+  color: #b194c2;
+}
+.activity .icon-button {
+  padding: 5px;
+}
+.activity {
+  gap: 11px;
+  padding-bottom: 24px;
+}
+.itinerary-disclaimer {
+  font-size: 11px;
+  color: #b296c2;
+}
+.itinerary-header > p:not(.eyebrow) {
+  font-size: 12px;
+}
+.trip-main strong {
+  font-size: 14px;
+}
+.trip-main small {
+  font-size: 11px;
+}
+.trip-main > span:last-child > span {
+  font-size: 10px;
+  color: #a68ab8;
+}
+.folder-tabs > button {
+  font-size: 12px;
+}
+.trip-item {
+  padding: 12px;
+}
+.trip-layout {
+  grid-template-columns: minmax(230px, 0.75fr) minmax(0, 1.4fr);
+}
+.detail-notice,
+.dialog-subtitle {
+  font-size: 12px;
+}
+.detail-facts strong {
+  font-size: 13px;
+}
+.detail-facts small {
+  font-size: 11px;
+}
+.settings-box p {
+  font-size: 12px;
+}
+.modal-form > label:not(.checkbox-label),
+.checkbox-label {
+  font-size: 13px;
+}
+.modal-form input:not([type="checkbox"]),
+.modal-form select,
+.modal-form textarea {
+  font-size: 14px;
+  min-height: 44px;
+}
+.card-privacy p,
+.perk-conditions,
+.perk-eligibility {
+  font-size: 12px;
+}
+.perk-confirm,
+.perk-inputs label,
+.perk-estimate > span,
+.perk-estimate small,
+.perk-pending {
+  font-size: 11px;
+}
+.perk-inputs input {
+  font-size: 14px;
+  min-height: 44px;
+}
+.owned-card strong {
+  font-size: 14px;
+}
+.owned-card small {
+  font-size: 11px;
+}
+.perk-source {
+  font-size: 10px;
+  line-height: 1.8;
+}
+.perk-credit > span {
+  font-size: 11px;
+}
+.perk-ranking > p:last-child {
+  font-size: 12px;
+}
+.perk-trip-context {
+  font-size: 13px;
+}
+.perk-card > .secondary-button {
+  font-size: 12px;
+}
+.destination-card p {
+  font-size: 11px;
+  line-height: 1.7;
+}
+.destination-card > div > span {
+  font-size: 10px;
+}
+.destination-tag {
+  font-size: 9px;
+}
+.destination-card {
+  height: 265px;
+}
+.promise-strip strong {
+  font-size: 12px;
+}
+.promise-strip small {
+  font-size: 10px;
+  line-height: 1.7;
+}
+.footer {
+  font-size: 11px;
+}
+.footer small {
+  font-size: 10px;
+  color: #9d81af;
+}
+.itinerary-cta h3 {
+  font-size: 16px;
+}
+.itinerary-cta p {
+  font-size: 12px;
+  line-height: 1.8;
+}
+.dialog-close {
+  height: 36px;
+  width: 36px;
+}
+.form-error {
+  font-size: 12px;
+}
+.skip-link {
+  position: fixed;
+  left: 18px;
+  top: -100px;
+  z-index: 100;
+  padding: 12px 18px;
+  background: #e2b8ff;
+  color: #20102b;
+  border-radius: 8px;
+  font-size: 14px;
+}
+.skip-link:focus {
+  top: 15px;
+}
+.drawer-close,
+.mobile-bottom-nav {
+  display: none;
+}
+.resume-section {
+  margin-top: 30px;
+}
+.resume-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  margin-bottom: 16px;
+}
+.resume-heading .eyebrow {
+  font-size: 9px;
+  margin: 0 0 9px;
+}
+.resume-heading h2 {
+  font-size: 25px;
+  font-weight: 400;
+  letter-spacing: -0.6px;
+  margin: 0;
+}
+.resume-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+.resume-card {
+  border: 1px solid #58376b;
+  background: linear-gradient(120deg, #2e1d3d, #1d1328);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  text-align: left;
+  gap: 12px;
+  padding: 11px;
+  min-width: 0;
+  box-shadow: 0 6px 20px #0002;
+}
+.resume-card:hover {
+  border-color: #bd8bdd;
+  background: #382247;
+  transform: translateY(-2px);
+}
+.resume-photo {
+  width: 55px;
+  height: 73px;
+  border-radius: 8px;
+  background-size: cover;
+  background-position: center;
+  flex-shrink: 0;
+}
+.resume-copy {
+  display: grid;
+  gap: 7px;
+  min-width: 0;
+  flex: 1;
+}
+.resume-city {
+  font-size: 10px;
+  color: #bf9dd4;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+.resume-copy > strong {
+  font-size: 13px;
+  font-weight: 400;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.resume-copy > small {
+  font-size: 10px;
+  color: #b094c2;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.resume-card > svg {
+  color: #c9a3e1;
+  flex-shrink: 0;
+}
+.main-content:has(.resume-section) .hero {
+  padding-top: 34px;
+}
+.active-trip-strip {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: linear-gradient(100deg, #30203f, #24172f);
+  border: 1px solid #634276;
+  border-radius: 12px;
+  padding: 16px 18px;
+  margin: 0 auto 22px;
+  max-width: 900px;
+}
+.trip-strip-icon {
+  height: 36px;
+  width: 36px;
+  border-radius: 9px;
+  background: #493057;
+  display: grid;
+  place-items: center;
+  color: #e4baff;
+  flex-shrink: 0;
+}
+.active-trip-strip > div {
+  flex: 1;
+  min-width: 0;
+}
+.active-trip-strip strong {
+  font-size: 14px;
+  font-weight: 400;
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.active-trip-strip > div > span {
+  display: block;
+  font-size: 11px;
+  color: #bca0ce;
+  margin-top: 5px;
+}
+.active-trip-strip .secondary-button {
+  min-height: 36px;
+  font-size: 11px;
+}
+.active-trip-strip > .text-button {
+  font-size: 11px;
+  margin-left: 5px;
+}
+.applied-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 18px;
+}
+.applied-filters > span {
+  font-size: 11px;
+  color: #ad90bf;
+  margin-right: 3px;
+}
+.applied-filters > button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 32px;
+  border: 1px solid #674580;
+  background: #342144;
+  color: #e0bafa;
+  padding: 6px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  text-transform: capitalize;
+}
+.applied-filters > button:hover {
+  background: #4b2e60;
+  border-color: #c191e0;
+}
+.applied-filters > .clear-all-filters {
+  border: 0;
+  background: transparent;
+  color: #c5a4da;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.stay-grid {
+  align-items: start;
+}
+@media (max-width: 1100px) {
+  .resume-grid {
+    grid-template-columns: 1fr;
+  }
+  .resume-card {
+    padding: 11px 14px;
+  }
+  .resume-photo {
+    width: 51px;
+    height: 58px;
+  }
+  .resume-copy {
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 6px 15px;
+  }
+  .resume-copy > strong {
+    grid-column: 1;
+    grid-row: 2;
+  }
+  .resume-copy > small {
+    grid-row: 1/3;
+    grid-column: 2;
+  }
+  .trip-layout {
+    grid-template-columns: 1fr;
+  }
+  .hero h1 {
+    font-size: 48px;
+  }
+  .search-field select,
+  .search-field input {
+    font-size: 12px;
+  }
+  .active-trip-strip {
+    padding: 14px;
+  }
+  .active-trip-strip > .text-button {
+    display: none;
+  }
+  .promise-strip small {
+    font-size: 9px;
+  }
+  .niva-heading h2 > span {
+    display: none;
+  }
+}
+@media (max-width: 650px) {
+  .main-shell {
+    padding-bottom: 78px;
+  }
+  .main-content {
+    padding: 0 18px;
+  }
+  .topbar {
+    height: 62px;
+  }
+  .mobile-bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    z-index: 40;
+    padding: 8px 10px calc(9px + env(safe-area-inset-bottom));
+    border-top: 1px solid #634275;
+    background: #20132eed;
+    backdrop-filter: blur(20px);
+    box-shadow: 0 -5px 35px #0004;
+  }
+  .mobile-bottom-nav > button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    border-radius: 10px;
+    padding: 8px 4px;
+    min-height: 50px;
+    position: relative;
+    color: #af92c1;
+    font-size: 10px;
+  }
+  .mobile-bottom-nav > button.selected {
+    color: #eac8ff;
+    background: #422851;
+  }
+  .mobile-bottom-nav > button > b {
+    position: absolute;
+    top: 1px;
+    left: calc(50% + 6px);
+    height: 17px;
+    min-width: 17px;
+    border-radius: 10px;
+    display: grid;
+    place-items: center;
+    background: #d8aff2;
+    color: #2c163d;
+    border: 2px solid #20132e;
+    font-size: 9px;
+    font-weight: 400;
+  }
+  .drawer-close {
+    display: grid;
+    position: absolute;
+    top: 24px;
+    right: 15px;
+  }
+  .sidebar .brand {
+    margin-right: 40px;
+  }
+  .sidebar.open {
+    box-shadow: 15px 0 65px #0007;
+  }
+  .sidebar {
+    padding-top: 28px;
+  }
+  .sidebar-label {
+    font-size: 10px;
+  }
+  .primary-nav > button {
+    font-size: 14px;
+  }
+  .hero {
+    padding: 32px 0 24px;
+  }
+  .hero h1 {
+    font-size: 42px;
+  }
+  .hero > .eyebrow {
+    font-size: 7px;
+    letter-spacing: 1.1px;
+    line-height: 1.9;
+  }
+  .hero-description {
+    font-size: 12px;
+    line-height: 1.85;
+  }
+  .hero.compact h1 {
+    font-size: 33px;
+  }
+  .hero.compact {
+    padding: 26px 0 20px;
+  }
+  .resume-section {
+    margin-top: 26px;
+  }
+  .resume-heading h2 {
+    font-size: 22px;
+  }
+  .resume-heading .eyebrow {
+    font-size: 8px;
+  }
+  .resume-heading > .text-button {
+    font-size: 10px;
+    white-space: nowrap;
+  }
+  .resume-copy {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+  .resume-copy > small {
+    grid-row: auto;
+    grid-column: auto;
+  }
+  .resume-copy > strong {
+    grid-row: auto;
+  }
+  .resume-photo {
+    height: 78px;
+    width: 59px;
+  }
+  .resume-grid {
+    gap: 10px;
+  }
+  .resume-grid > .resume-card:nth-child(n + 3) {
+    display: none;
+  }
+  .resume-copy > strong {
+    font-size: 14px;
+  }
+  .resume-copy > small,
+  .resume-city {
+    font-size: 11px;
+  }
+  .main-content:has(.resume-section) .hero {
+    padding-top: 29px;
+  }
+  .niva-panel {
+    padding: 17px 14px;
+  }
+  .niva-heading h2 {
+    font-size: 16px;
+  }
+  .niva-heading p {
+    font-size: 10px;
+  }
+  .assistant-status {
+    font-size: 9px;
+  }
+  .chat-form textarea {
+    font-size: 14px;
+    min-height: 90px;
+    padding: 13px;
+  }
+  .chat-form-bottom > span {
+    font-size: 10px;
+    max-width: 230px;
+  }
+  .prompt-chips {
+    gap: 7px;
+  }
+  .prompt-chips > button {
+    font-size: 10px;
+    min-height: 36px;
+    padding: 8px;
+  }
+  .message p {
+    font-size: 13px;
+  }
+  .message small {
+    font-size: 10px;
+  }
+  .or-divider {
+    font-size: 10px;
+  }
+  .search-field > span {
+    font-size: 11px;
+  }
+  .search-field select,
+  .search-field input {
+    font-size: 13px;
+    min-height: 28px;
+  }
+  .search-bottom > span {
+    font-size: 9px;
+    max-width: 150px;
+  }
+  .search-submit {
+    min-height: 44px;
+  }
+  .search-panel {
+    padding: 18px 14px 10px;
+  }
+  .section-heading h2 {
+    font-size: 28px;
+  }
+  .section-heading .eyebrow {
+    font-size: 9px;
+    line-height: 1.8;
+  }
+  .section-heading > div > p:last-child {
+    font-size: 12px;
+    line-height: 1.8;
+  }
+  .stay-image {
+    height: 210px;
+  }
+  .stay-title {
+    font-size: 19px;
+  }
+  .stay-body .eyebrow {
+    font-size: 10px;
+  }
+  .stay-address {
+    font-size: 12px;
+  }
+  .amenity-list > span {
+    font-size: 11px;
+  }
+  .stay-price small {
+    font-size: 11px;
+  }
+  .stay-price strong {
+    font-size: 28px;
+  }
+  .photo-label {
+    font-size: 9px;
+  }
+  .heart-button,
+  .circle-button {
+    height: 40px;
+    width: 40px;
+  }
+  .data-notice {
+    font-size: 11px;
+    line-height: 1.9;
+  }
+  .applied-filters > span {
+    width: 100%;
+    font-size: 10px;
+    margin-bottom: 1px;
+  }
+  .applied-filters > button {
+    min-height: 36px;
+    font-size: 11px;
+  }
+  .active-trip-strip {
+    padding: 13px 12px;
+    gap: 9px;
+    margin-bottom: 18px;
+  }
+  .active-trip-strip strong {
+    font-size: 13px;
+  }
+  .active-trip-strip > div > span {
+    font-size: 9px;
+    line-height: 1.7;
+  }
+  .active-trip-strip .secondary-button {
+    font-size: 10px;
+    gap: 4px;
+    padding: 8px;
+    min-height: 36px;
+  }
+  .trip-strip-icon {
+    width: 31px;
+    height: 36px;
+  }
+  .page-heading h1 {
+    font-size: 35px;
+  }
+  .page-heading > p:last-child {
+    font-size: 13px;
+  }
+  .page-heading .eyebrow {
+    font-size: 8px;
+    line-height: 1.9;
+  }
+  .collection-toolbar {
+    font-size: 12px;
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .collection-toolbar > label {
+    font-size: 11px;
+    width: 100%;
+    justify-content: space-between;
+  }
+  .collection-toolbar select {
+    max-width: 200px;
+    font-size: 12px;
+  }
+  .compare-bar {
+    bottom: 100px;
+    gap: 9px;
+    padding: 12px;
+  }
+  .compare-bar > span {
+    font-size: 11px;
+  }
+  .compare-bar > .primary-button {
+    font-size: 10px;
+    min-height: 40px;
+  }
+  .compare-button {
+    font-size: 12px;
+  }
+  .day-heading > span {
+    font-size: 10px;
+  }
+  .day-heading > .text-button {
+    font-size: 10px;
+  }
+  .activity strong {
+    font-size: 13px;
+  }
+  .activity p {
+    font-size: 11px;
+    line-height: 1.8;
+  }
+  .activity > time {
+    font-size: 11px;
+    width: 34px;
+  }
+  .activity {
+    gap: 8px;
+  }
+  .activity .icon-button {
+    padding: 5px 2px;
+    min-height: 28px;
+  }
+  .itinerary-header h2 {
+    font-size: 27px;
+  }
+  .itinerary-disclaimer {
+    font-size: 11px;
+  }
+  .dialog-content {
+    padding: 25px 19px;
+    max-height: 86vh;
+  }
+  .detail-facts strong {
+    font-size: 12px;
+  }
+  .detail-facts small {
+    font-size: 11px;
+  }
+  .dialog-actions .primary-button,
+  .dialog-actions .secondary-button {
+    font-size: 11px;
+    min-height: 42px;
+  }
+  .card-perks-page .page-heading h1 {
+    font-size: 32px;
+  }
+  .card-privacy p,
+  .perk-conditions,
+  .perk-eligibility {
+    font-size: 12px;
+  }
+  .perk-confirm,
+  .perk-inputs label,
+  .perk-estimate > span,
+  .perk-estimate small,
+  .perk-pending {
+    font-size: 11px;
+  }
+  .owned-card strong {
+    font-size: 14px;
+  }
+  .perk-source {
+    font-size: 10px;
+  }
+  .perk-ranking > p:last-child {
+    font-size: 12px;
+  }
+  .promise-strip strong {
+    font-size: 12px;
+  }
+  .promise-strip small {
+    font-size: 11px;
+  }
+  .destination-card p {
+    font-size: 12px;
+  }
+  .destination-card {
+    height: 250px;
+  }
+  .empty-panel p {
+    font-size: 13px;
+  }
+  .empty-panel h3 {
+    font-size: 23px;
+  }
+  .footer {
+    font-size: 10px;
+  }
+  .search-filters > label,
+  .amenity-filters label {
+    font-size: 12px;
+  }
+  .search-filters input[type="number"],
+  .search-filters select {
+    font-size: 14px;
+    min-height: 42px;
+  }
+  .folder-tabs > button {
+    font-size: 11px;
+  }
+  .trip-toolbar > .secondary-button {
+    font-size: 11px;
+  }
+  .trip-main strong {
+    font-size: 14px;
+  }
+  .trip-main small {
+    font-size: 11px;
+  }
+  .trip-main > span:last-child > span {
+    font-size: 10px;
+  }
+}
+
+.missing-trip-notice {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border: 1px solid #715087;
+  border-radius: 9px;
+  background: #2b1b39;
+  padding: 15px 18px;
+  margin-top: 25px;
+  font-size: 12px;
+  color: #ccb0df;
+}
