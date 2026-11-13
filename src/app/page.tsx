@@ -1,5 +1,4 @@
-import { HotelHomePage } from "~/app/_components/hotel-home";
-
+import { TravelApp } from "./_components/travel-app";
 export default function Home() {
-  return <HotelHomePage />;
+  return <TravelApp />;
 }

@@ -7,14 +7,14 @@ export const env = createEnv({
    * isn't built with invalid env vars.
    */
   server: {
-    AUTH_SECRET:
-      process.env.NODE_ENV === "production"
-        ? z.string()
-        : z.string().optional(),
+    AUTH_SECRET: z.string().optional(),
     AUTH_DISCORD_ID: z.string().optional(),
     AUTH_DISCORD_SECRET: z.string().optional(),
     AMADEUS_CLIENT_ID: z.string().optional(),
     AMADEUS_CLIENT_SECRET: z.string().optional(),
+    AMADEUS_ENV: z.enum(["test", "production"]).optional(),
+    OPENAI_API_KEY: z.string().optional(),
+    OPENAI_MODEL: z.string().optional(),
     NODE_ENV: z
       .enum(["development", "test", "production"])
       .default("development"),
@@ -39,6 +39,9 @@ export const env = createEnv({
     AUTH_DISCORD_SECRET: process.env.AUTH_DISCORD_SECRET,
     AMADEUS_CLIENT_ID: process.env.AMADEUS_CLIENT_ID,
     AMADEUS_CLIENT_SECRET: process.env.AMADEUS_CLIENT_SECRET,
+    AMADEUS_ENV: process.env.AMADEUS_ENV,
+    OPENAI_API_KEY: process.env.OPENAI_API_KEY,
+    OPENAI_MODEL: process.env.OPENAI_MODEL,
     NODE_ENV: process.env.NODE_ENV,
     // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
   },

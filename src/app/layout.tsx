@@ -7,25 +7,27 @@ import { Toaster } from "~/components/ui/sonner";
 
 export const metadata: Metadata = {
   title: {
-    default: "Goniva — Find Your Perfect Hotel Stay",
-    template: "%s | Goniva Hotels",
+    default: "GoNiva — Find Your Somewhere",
+    template: "%s | GoNiva",
   },
   description:
-    "Search and book hotels worldwide with real-time pricing powered by Amadeus API. Compare rates, amenities, and cancellation policies instantly.",
+    "Your personal travel space. Plan with Niva, discover stays, compare favorites, and make every day of your trip your own.",
   keywords: ["hotels", "booking", "travel", "Amadeus", "accommodation"],
   authors: [{ name: "Goniva" }],
   openGraph: {
     type: "website",
-    title: "Goniva — Find Your Perfect Hotel Stay",
-    description: "Real-time hotel pricing · Worldwide coverage · Instant availability",
+    title: "GoNiva — Find Your Somewhere",
+    description:
+      "Thoughtful stays. Your kind of days. Plan your next adventure with GoNiva.",
     siteName: "Goniva Hotels",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Goniva — Find Your Perfect Hotel Stay",
-    description: "Real-time hotel pricing · Worldwide coverage · Instant availability",
+    title: "GoNiva — Find Your Somewhere",
+    description:
+      "Thoughtful stays. Your kind of days. Plan your next adventure with GoNiva.",
   },
-  icons: [{ rel: "icon", url: "/favicon.ico" }],
+  icons: [{ rel: "icon", url: "/icon.svg" }],
 };
 
 export default function RootLayout({
